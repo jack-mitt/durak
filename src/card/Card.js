@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import CenteredContainer from '../containers/CenteredContainer'
 
-export default ({ card, height = 200 }) => {
+export default ({ card, onHoverIn, onHoverOut, height = 200 }) => {
 
     const aspectRatio = 0.7 // TODO: Get aspect ratio of card images
 
@@ -15,6 +15,8 @@ export default ({ card, height = 200 }) => {
 
     return (
         <CenteredContainer
+            onMouseEnter={onHoverIn}
+            onMouseLeave={onHoverOut}
             style={{
                 height: height,
                 margin: '0px 5px',

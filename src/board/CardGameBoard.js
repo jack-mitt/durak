@@ -40,6 +40,7 @@ class CardGameBoard extends React.Component {
     // TODO how do we know which player is the 'main' one
     // assign each client a key and that corresponds to the key in the player element?
     render(){
+
         return (
             <div
                 style={{
@@ -52,7 +53,7 @@ class CardGameBoard extends React.Component {
             >
                 This is the game board
                 {this.state.players.map(({key, hand, pokerRuleCount}) => 
-                    <Player hand={hand} key={key} pokerRuleCount={pokerRuleCount} />    
+                    <Player hand={hand} id={key} key={key} pokerRuleCount={pokerRuleCount} />    
                 )}
             </div>
         );
