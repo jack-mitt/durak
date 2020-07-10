@@ -29,7 +29,8 @@ class CardGameBoard extends React.Component {
             );
             auxPlayers[i].hand = await drawCardFromDeck(this.deckId, 6);
         }
-        this.state.players = auxPlayers;
+        this.setState({players: auxPlayers});
+
     }
 
     makePlayerArray  = () => {
@@ -42,7 +43,9 @@ class CardGameBoard extends React.Component {
         return (
             <div>
                 This is the game board
-                
+                {this.state.players.map(({key, hand, pokerRuleCount}) => 
+                    <Player hand={hand} key={key} pokerRuleCount={pokerRuleCount} />    
+                )}
             </div>
         );
     }
