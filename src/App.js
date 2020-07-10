@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import {Layout} from './Layout.components';
-import Board from "./CardGameBoard";
+import Board from "./board/CardGameBoard";
 
 function App() {
   const state = {

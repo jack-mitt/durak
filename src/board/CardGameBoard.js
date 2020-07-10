@@ -1,6 +1,6 @@
 import React from "react";
-import { createDeck, drawCardFromDeck } from "./api";
-import Player from "./Player";
+import { createDeck, drawCardFromDeck } from "../api";
+import Player from "../player/Player";
 
 
 class CardGameBoard extends React.Component {
@@ -41,7 +41,15 @@ class CardGameBoard extends React.Component {
     // assign each client a key and that corresponds to the key in the player element?
     render(){
         return (
-            <div>
+            <div
+                style={{
+                    display: 'flex',
+                    width: '100%',
+                    height: '100%',
+                    flexFlow: 'column',
+                    justifyContent: 'flex-start'
+                }}
+            >
                 This is the game board
                 {this.state.players.map(({key, hand, pokerRuleCount}) => 
                     <Player hand={hand} key={key} pokerRuleCount={pokerRuleCount} />    
