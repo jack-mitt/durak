@@ -4,7 +4,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 
 import Card from '../card/Card'
-import { drawCardFromDeck } from "../api";
 import CenteredContainer from "../containers/CenteredContainer";
 
 function Player({ deckId, hand, id, pokerRuleCount }) {
@@ -31,9 +30,10 @@ function Player({ deckId, hand, id, pokerRuleCount }) {
         <CenteredContainer
             style={{
                 background: 'rgba(0,0,0,0.5)',
-                height: '300px',
-                marginBottom: '20px',
-                width: '100%'
+                height: '250px',
+                width: '100%',
+                position: 'absolute',
+                bottom: id === 1 ? '0' : '100',
             }}
         >
             {
