@@ -51,7 +51,6 @@ class CardGameBoard extends React.Component {
                     justifyContent: 'flex-start'
                 }}
             >
-                This is the game board
                 {this.state.players.map(({key, hand, pokerRuleCount}) => 
                     <Player hand={hand} id={key} key={key} pokerRuleCount={pokerRuleCount} />    
                 )}
