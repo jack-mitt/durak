@@ -5,14 +5,16 @@ export default ({ card, onHoverIn, onHoverOut, height = 200 }) => {
 
     const aspectRatio = 0.7 // TODO: Get aspect ratio of card images
 
+    //dont think we need this  9 : 15
     const cardColor = useMemo(() =>
         card.code ?
             (card.code[1] === 'C' || card.code[1] === 'S') ?
-                'red' :
                 'black' :
+                'red' :
             'white'
     , [card])
 
+    console.log(card);
     return (
         <CenteredContainer
             onMouseEnter={onHoverIn}
@@ -28,7 +30,7 @@ export default ({ card, onHoverIn, onHoverOut, height = 200 }) => {
                 color: cardColor
             }}
         >
-            {card.code}
+            <img src={card.image} alt={card.code} width="100%" height="100%"/>
         </CenteredContainer>
     )
 }
