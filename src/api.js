@@ -15,13 +15,15 @@ export const createDeck = async () => {
   return deckId;
 };
 
-export const drawCardFromDeck = async (deckId, drawCount) => {
-    const {data} = await api.get(`${deckId}/draw/`, {
+export const drawCardFromDeck = (deckId, drawCount, callback) => {
+    api.get(`${deckId}/draw/`, {
         params: {
             count : drawCount,
         },
+    }).then(res => {
+        callback(res.data.cards)
+    }).catch(err => {
+        console.log(err)
     });
-    console.log(data);
-    const { cards } = data;
-    return cards;
+
 }
