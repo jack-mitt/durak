@@ -89,8 +89,9 @@ export default ({ playerCount }) => {
       let updatedPlayerIndex = getPlayerIndexByKey(newPlayers, id);
       if (updatedPlayerIndex) {
         newPlayers[updatedPlayerIndex][field] = value;
+        setPlayers(newPlayers)
       }
-      setPlayers(newPlayers)
+
     },
     [players]
   );
