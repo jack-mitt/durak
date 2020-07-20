@@ -42,13 +42,13 @@ export default ({ playerCount }) => {
     }
   }
 
-  const removeCardFromHand = (card, playerId) => {
+  const removeCardFromHand = useCallback((card, playerId) => {
     let index = getPlayerIndexByKey(players, playerId)
     let player = players[index];
     let newHand = player.hand.filter(c => c.code !== card.code);
     updatePlayer(playerId, "hand", newHand);
     //need some help here with how to update the player array
-  }
+  }, [players])
 
   useEffect(() => {
     //create deck and give players their hands
@@ -87,13 +87,15 @@ export default ({ playerCount }) => {
     (id, field, value) => {
       const newPlayers = cloneDeep(players);
       let updatedPlayerIndex = getPlayerIndexByKey(newPlayers, id);
-      console.log(updatedPlayerIndex);
       if (updatedPlayerIndex) {
         newPlayers[updatedPlayerIndex][field] = value;
       }
+      setPlayers(newPlayers)
     },
     [players]
   );
+
+  console.log(players)
 
   //When a card is moved from the hand onto the game board
   const placeCard = (card, playerId) => {

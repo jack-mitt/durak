@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import Tile from './Tile';
 import { update } from "lodash";
 /**
  * 
