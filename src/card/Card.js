@@ -3,7 +3,7 @@ import CenteredContainer from "../containers/CenteredContainer";
 import { useSpring, animated, interpolate } from "react-spring";
 import { useDrag } from "react-use-gesture";
 
-export default ({ card, onHoverIn, onHoverOut, height = 200, placeCard }) => {
+export default ({ card, handleCardHover, onHoverIn, onHoverOut, height = 200, placeCard }) => {
   const [active] = useState(false);
 
   const aspectRatio = 0.7; // TODO: Get aspect ratio of card images
@@ -12,14 +12,23 @@ export default ({ card, onHoverIn, onHoverOut, height = 200, placeCard }) => {
 
   const [{ x, y, scale }, set] = useSpring(() => ({ x: 0, y: 0, scale: 1 }));
 
+  const getCenter = bbox => {
+    let cx = (bbox.x || bbox.left) + bbox.width/2
+    let cy = (bbox.y || bbox.top) + bbox.height/2
+
+    return {x: cx, y:cy}
+  }
+
   // Set the drag hook and define component movement based on gesture data
-  const bind = useDrag(({ down, movement: [mx, my] }) => {
-    if(my < -80 && !down){
-        placeCard(card, 1)
+  const bind = useDrag(({ down, movement: [mx, my], event }) => {
+
+    //TODO: get actual location of attack table 
+    if(!down){
+        placeCard(card, 1, getCenter(event.target.getBoundingClientRect()))
     }
-    if(my > 80 && !down){
-      placeCard(card, 0)
-    }
+    // else {
+    //     handleCardHover(card, 1, getCenter(event.target.getBoundingClientRect()))
+    // }
     set({ x: down ? mx : 0, y: down ? my : 0, scale: down ? 1.1 : 1 });
   });
 

@@ -8,7 +8,7 @@ import CenteredContainer from "../containers/CenteredContainer";
 
 import { drawCardFromDeck } from "../api";
 
-function Player({ deckId, hand, id, pokerRuleCount, updatePlayer, placeCard }) {
+function Player({ deckId, hand, id, pokerRuleCount, updatePlayer, handleCardHover, placeCard, height }) {
   const [hoveredCardIndex, setHoveredCardIndex] = useState(null);
 
   const hoveredCard = useMemo(() => (hand ? hand[hoveredCardIndex] : null), [
@@ -36,7 +36,7 @@ function Player({ deckId, hand, id, pokerRuleCount, updatePlayer, placeCard }) {
     <CenteredContainer
       style={{
         background: "rgba(0,0,0,0.5)",
-        height: "250px",
+        height,
         width: "100%",
         position: "absolute",
         bottom: id === 1 ? "0" : "100",
@@ -45,6 +45,8 @@ function Player({ deckId, hand, id, pokerRuleCount, updatePlayer, placeCard }) {
       {hand
         ? hand.map((card, index) => (
             <Card
+              height={height*0.9}
+              handleCardHover={handleCardHover}
               key={`player_${id}_card_${index}`}
               placeCard={placeCard}
               onHoverIn={() => setHoveredCardIndex(index)}
