@@ -198,7 +198,7 @@ export default ({ playerCount }) => {
         }}
       >
         <AttackTable attacks={attacks} />
-        <ActiveAttacks attacks={attacks}/>
+        <ActiveAttacks attacks={attacks} height={PLAYER_HEIGHT}/>
       </CenteredContainer>
 
       {players
