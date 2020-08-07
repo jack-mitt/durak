@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { createDeck, drawCardFromDeck } from "../api";
+import { createDeck, drawCardFromDeck, drawTrump } from "../api";
 import Player from "../player/Player";
 import AttackTable from "./AttackTable";
 import { cloneDeep } from "lodash";
 import ResizeObserver from "react-resize-observer";
 import CenteredContainer from "../containers/CenteredContainer";
 import ActiveAttacks from "./ActiveAttacks";
+import Trump from "./Trump";
 
 //TODO: change this for multiplayer
 const PLAYER_HEIGHT = 150;
@@ -14,6 +15,7 @@ const PLAYER_HEIGHT = 150;
 //attac : {attackingCard : card, defendingCard: card / null}
 export default ({ playerCount }) => {
   const [deckId, setDeckId] = useState(null);
+  const [trumpCard, setTrumpCard] = useState(null);
   // 0: hasnt started, 1: started, 2: over
   const [boundingBox, setBoundingBox] = useState(null);
   const [boxHovered, setBoxHovered] = useState(false);
@@ -26,6 +28,12 @@ export default ({ playerCount }) => {
   const [currentPlayer, setCurrentPlayer] = useState(null);
 
   const [attacks, setAttacks] = useState([]);
+
+  const createTrump = (deckId, callback) => {
+    return drawCardFromDeck(deckId, 1, (trump) => {
+        callback(trump);
+    });
+  }
 
   const recursiveDrawHands = (deckId, oldPlayers, newPlayers, callback) => {
     if (oldPlayers.length === 0) {
@@ -73,19 +81,25 @@ export default ({ playerCount }) => {
     createDeck()
       .then((newDeckId) => {
         setDeckId(newDeckId);
-
-        let auxPlayers = [];
-        for (let i = 0; i < playerCount; i++) {
-          auxPlayers.push({
-            hand: null,
-            key: i,
-            pokerRuleCount: 2,
+        drawTrump(newDeckId).then((trump) => {
+          console.log(trump);
+          setTrumpCard(trump);
+          let auxPlayers = [];
+          for (let i = 0; i < playerCount; i++) {
+            auxPlayers.push({
+              hand: null,
+              key: i,
+              pokerRuleCount: 2,
+            });
+          }
+          recursiveDrawHands(newDeckId, auxPlayers, [], (newPlayers) => {
+            //console.log(newPlayers);
+            setPlayers(newPlayers);
           });
-        }
-        recursiveDrawHands(newDeckId, auxPlayers, [], (newPlayers) => {
-          //console.log(newPlayers);
-          setPlayers(newPlayers);
+        }).catch((err) => {
+          console.log(err);
         });
+      console.log(trumpCard);
       })
       .catch((err) => {
         console.log(err);
