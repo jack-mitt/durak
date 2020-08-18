@@ -21,7 +21,7 @@ export const drawTrump = async (deckId) => {
       count : 1,
     },
   });
-  console.log(data);
+  
   const trump = data.cards[0];
 
   return trump;
