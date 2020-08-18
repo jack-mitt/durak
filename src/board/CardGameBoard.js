@@ -7,7 +7,7 @@ import ResizeObserver from "react-resize-observer";
 import CenteredContainer from "../containers/CenteredContainer";
 import ActiveAttacks from "./ActiveAttacks";
 import Trump from "./Trump";
-import {isLetter} from  "./../util/baseUtil";
+import {checkLowest} from  "./../util/baseUtil";
 
 //TODO: change this for multiplayer
 const PLAYER_HEIGHT = 150;
@@ -34,48 +34,9 @@ export default ({ playerCount }) => {
 
   let deckGone = false; //if there are cards left in the deck or not
 
-  const checkLowest = (players, trumpCard) => {
-      // console.log(players);
-      console.log(trumpCard);
-      let minTrump = null;
-      let minPlayer = null;
-      let auxNum = null
-      for (let i = 0; i < players.length; i++){
-        for(let j = 0; j < 6; j++){
-          //console.log(players[i].hand[j]);
-          if(players[i].hand[j].code[1] === trumpCard.code[1]){
-            if(isLetter(players[i].hand[j].code[0])){
-              auxNum = players[i].hand[j].code[0].charCodeAt(0) - 97;
-              auxNum = Math.abs(auxNum);
-              //console.log(auxNum);
-            } else if(players[i].hand[j].code[0] === 0) {
-              auxNum = 10;
-            } else {
-              auxNum = players[i].hand[j].code[0];
-            }
-            if(auxNum < minTrump){
-              minTrump = auxNum;
-              if(minPlayer && minPlayer !== i){
-                minPlayer = i;
-              } else {
-                minPlayer = i;
-              }
-            } else {
-              minTrump = auxNum;
-            }
-            if(!minPlayer){
-              minPlayer = i;
-            }
-          }
-        }
-      }
-      console.log(minTrump);
-      console.log(minPlayer);
-      if(minPlayer === null){
-        return 0;
-      } else {
-        return minPlayer;
-      }
+  const getFirstPlayer = (players, trumpCard) => {
+      let minPlayerIndex = checkLowest(players, trumpCard);
+      return players[minPlayerIndex];
   }
 
   const recursiveDrawHands = (deckId, oldPlayers, newPlayers, callback) => {
@@ -133,12 +94,15 @@ export default ({ playerCount }) => {
               hand: null,
               key: i,
               pokerRuleCount: 2,
+              attacking: false,
+              defending: false
             });
           }
           recursiveDrawHands(newDeckId, auxPlayers, [], (newPlayers) => {
             //console.log(newPlayers);
             setPlayers(newPlayers);
-            setAttacker(checkLowest(newPlayers, trump)); //decide who starts the game
+            /* TODO */
+            //setAttacker(checkLowest(newPlayers, trump)); //decide who starts the game
           });
         }).catch((err) => {
           console.log(err);
