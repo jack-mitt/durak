@@ -50,7 +50,7 @@ function App() {
         <SignInPage user={user} signIn={signIn} createUser={createUser} />
         <GameMenu createGame={createGame} user={user} />
         <LogOutButton user={user} logOut={logOut}/>
-        {/* <Board playerCount={state.playerCount} />  */}
+        <Board playerCount={state.playerCount} /> 
       </Layout>
     </div>
   );
