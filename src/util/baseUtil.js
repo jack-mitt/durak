@@ -1,3 +1,6 @@
+import { createDeck, drawCardFromDeck, drawTrump, recursiveDrawHands } from "../api";
+import {players} from "./testGameData"
+import { fetchGameInvites, createGame, getUserData } from '../db/dbUtils'
 const suiteAscii = {
     "H" : "♥",
     "D" : "♦",
@@ -60,4 +63,41 @@ const checkLowest = (players, trumpCard) => {
     }
 }
 
-export {checkLowest, isLetter, suiteAscii, suiteColor};
+const createTestGame = () => {
+  let host = players[0];
+  let auxPlayers = players;
+  let invitedPlayers = []
+  createDeck().then(deckId => {
+    drawTrump(deckId).then(trumpCard => {
+        recursiveDrawHands(deckId, auxPlayers, [], (newPlayers) => {
+            console.log(newPlayers);
+            let attackerIndex = checkLowest(newPlayers, trumpCard);
+            console.log(attackerIndex);
+            let attackerId = newPlayers[attackerIndex].id;
+            
+            //gameState:
+            // 0 - Waiting to Start
+            // 1 - In Progress
+            // 2 - Finished
+            let game = {
+                //trump: drawTrumpCard(),
+                title: `${host.username}'s game`,
+                gameState: 0,
+                invitedPlayers,
+                attacks: [],
+                hostId: host.id,
+                players: newPlayers,
+                id: deckId,
+                currentPlayer: attackerId,
+                trump: trumpCard
+            }
+
+            return game;
+            //setAttacker(checkLowest(newPlayers, trump)); //decide who starts the game
+          });
+        })
+      })
+      
+}
+
+export {checkLowest, isLetter, suiteAscii, suiteColor, createTestGame};

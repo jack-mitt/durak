@@ -81,7 +81,7 @@ const createGame = (host, players, callback) => {
                     invitedPlayers,
                     attacks: [],
                     hostId: host.id,
-                    players: auxPlayers,
+                    players: newPlayers,
                     id: deckId,
                     currentPlayer: attackerId,
                     trump: trumpCard

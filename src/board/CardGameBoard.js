@@ -7,7 +7,7 @@ import ResizeObserver from "react-resize-observer";
 import CenteredContainer from "../containers/CenteredContainer";
 import ActiveAttacks from "./ActiveAttacks";
 import Trump from "./Trump";
-import {checkLowest} from  "./../util/baseUtil";
+import {checkLowest, createTestGame} from  "./../util/baseUtil";
 import useGameData from "../hooks/useGameData";
 import PlayerHand from "../player/PlayerHand";
 
@@ -20,10 +20,10 @@ export default ({ user }) => {
   // 0: hasnt started, 1: started, 2: over
   const [boundingBox, setBoundingBox] = useState(null);
   const [boxHovered, setBoxHovered] = useState(false);
-  console.log(user);
+  
+  
   const {game} = useGameData({user})
-
-  console.log(game)
+  //console.log(game)
 
   // 0: clockwise, 1: counter-clockwise
   //const [direction, setDirection] = useState(0);

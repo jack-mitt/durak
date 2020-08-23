@@ -46,9 +46,9 @@ function App() {
     <div className="App">
       <Layout>
         <Background />
-        <SignInPage user={user} signIn={signIn} createUser={createUser} />
+        {/* <SignInPage user={user} signIn={signIn} createUser={createUser} />
         <GameMenu createGame={createGame} user={user} />
-        <LogOutButton user={user} logOut={logOut} />
+        <LogOutButton user={user} logOut={logOut} />  */}
         <Board user={user} />
       </Layout>
     </div>
