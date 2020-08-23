@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import Tile from "./Tile";
 import { update } from "lodash";
 /**
@@ -9,7 +9,9 @@ import { update } from "lodash";
  * @param {Array[Player]} attackingPlayers players who can add to the attack
  * @param {String} trump suit that can beat any other suit  
  */
-function AttackTable({attacks, defendingPlayer, attackingPlayers, trump}){
+function AttackTable({game}){
+
+    const attacks = useMemo(() => game ? game.attacks : null, [game])
     const cardHeight = 40;
     const [legalAttacks, setLegalAttacks] = useState(null);
     const [openAttacks, setOpenAttacks] = useState(null);
@@ -28,7 +30,7 @@ function AttackTable({attacks, defendingPlayer, attackingPlayers, trump}){
                 position: 'absolute',
                 top: '0px',
                 left: '0px',
-                height: attacks.length * cardHeight,
+                height: attacks ? attacks.length * cardHeight : 0,
                 width: "150px",
                 float: "right",
                 justifyContent: "right"

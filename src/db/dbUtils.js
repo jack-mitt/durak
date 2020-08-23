@@ -3,7 +3,8 @@ import 'firebase/firestore'
 
 import firebaseconfig from '../firebaseconfig'
 import { create } from 'lodash'
-import { createDeck } from '../api'
+import { createDeck, drawTrump, recursiveDrawHands } from '../api'
+import {checkLowest} from "../util/baseUtil";
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseconfig)
@@ -38,9 +39,10 @@ const getUserData = (username, callback) => {
 
 const createGame = (host, players, callback) => {
 
-    let auxPlayers = []
-    let invitedPlayers = []
+    let auxPlayers = ["keefypax", "tofeezy"]
+    let invitedPlayers = ["tofeezy", "keefypax"]
 
+    console.log("in db create game");
     for (let i = 0; i < players.length; i++) {
         let player = {
             hand: [],
@@ -61,34 +63,42 @@ const createGame = (host, players, callback) => {
     }
 
     createDeck().then(deckId => {
-        
-        let firstPlayerIndex = Math.floor(Math.random() * auxPlayers.length)
-        let firstPlayer = auxPlayers[firstPlayerIndex]
-        
-        console.log(auxPlayers)
-        console.log(firstPlayerIndex)
+        drawTrump(deckId).then(trumpCard => {
+            recursiveDrawHands(deckId, auxPlayers, [], (newPlayers) => {
+                console.log(newPlayers);
+                let attackerIndex = checkLowest(newPlayers, trumpCard);
+                console.log(attackerIndex);
+                let attackerId = newPlayers[attackerIndex].id;
+                
+                //gameState:
+                // 0 - Waiting to Start
+                // 1 - In Progress
+                // 2 - Finished
+                let game = {
+                    //trump: drawTrumpCard(),
+                    title: `${host.username}'s game`,
+                    gameState: 0,
+                    invitedPlayers,
+                    attacks: [],
+                    hostId: host.id,
+                    players: auxPlayers,
+                    id: deckId,
+                    currentPlayer: attackerId,
+                    trump: trumpCard
+                }
 
-        //gameState:
-        // 0 - Waiting to Start
-        // 1 - In Progress
-        // 2 - Finished
-        let game = {
-            //trump: drawTrumpCard(),
-            title: `${host.username}'s game`,
-            gameState: 0,
-            invitedPlayers,
-            hostId: host.id,
-            players: auxPlayers,
-            id: deckId,
-            currentPlayer: firstPlayer.id
-        }
+                db.collection('games').doc(deckId).set(game).then(() => {
+                    callback({ game })
+                }).catch(err => {
+                    console.log(err)
+                    callback({ error: 'Error creating game in database' })
+                })
+                //setAttacker(checkLowest(newPlayers, trump)); //decide who starts the game
+              });
 
-        db.collection('games').doc(deckId).set(game).then(() => {
-            callback({ game })
-        }).catch(err => {
-            console.log(err)
-            callback({ error: 'Error creating game in database' })
+            
         })
+        
     })
 
 }

@@ -8,118 +8,74 @@ import CenteredContainer from "../containers/CenteredContainer";
 import ActiveAttacks from "./ActiveAttacks";
 import Trump from "./Trump";
 import {checkLowest} from  "./../util/baseUtil";
+import useGameData from "../hooks/useGameData";
+import PlayerHand from "../player/PlayerHand";
 
 //TODO: change this for multiplayer
 const PLAYER_HEIGHT = 150;
 
 //board state variable array of attack objects
 //attac : {attackingCard : card, defendingCard: card / null}
-export default ({ playerCount }) => {
-  const [deckId, setDeckId] = useState(null);
-  const [trumpCard, setTrumpCard] = useState(null);
+export default ({ user }) => {
   // 0: hasnt started, 1: started, 2: over
   const [boundingBox, setBoundingBox] = useState(null);
   const [boxHovered, setBoxHovered] = useState(false);
-  const [gameState, setGameState] = useState(0);
+  console.log(user);
+  const {game} = useGameData({user})
+
+  console.log(game)
 
   // 0: clockwise, 1: counter-clockwise
-  const [direction, setDirection] = useState(0);
+  //const [direction, setDirection] = useState(0);
 
-  const [players, setPlayers] = useState(null);
-  const [currentPlayer, setCurrentPlayer] = useState(null);
 
-  const [attacks, setAttacks] = useState([]);
+//  const [attackingPlayer, setAttacker] = useState(null); //player who begins the attack
 
-  const [attackingPlayer, setAttacker] = useState(null); //player who begins the attack
+  //let deckGone = false; //if there are cards left in the deck or not]
 
-  let deckGone = false; //if there are cards left in the deck or not
+  //trumpGone = false
 
   const getFirstPlayer = (players, trumpCard) => {
       let minPlayerIndex = checkLowest(players, trumpCard);
       return players[minPlayerIndex];
   }
 
-  const recursiveDrawHands = (deckId, oldPlayers, newPlayers, callback) => {
-    if (oldPlayers.length === 0) {
-      callback(newPlayers);
-    } else {
-      drawCardFromDeck(deckId, 6, (hand) => {
-        newPlayers.push({ ...oldPlayers[0], hand });
-        oldPlayers.splice(0, 1);
-        recursiveDrawHands(deckId, oldPlayers, newPlayers, callback);
-      });
-    }
-  };
 
   //determine if a card placed on the board is a legal attack
-  const attackIsLegal = useCallback(
-    (card) => {
-      if (attacks.length === 0) {
-        return true;
-      }
-      for (let i = 0; i < attacks.length; ++i) {
-        //TODO: Log errors if no attacking card
-        if (attacks[i].attackingCard.code[0] === card.code[0]) {
-          return true;
-        }
-        return false;
-      }
-    },
-    [attacks]
-  );
+  // const attackIsLegal = useCallback(
+  //   (card) => {
+  //     if (attacks.length === 0) {
+  //       return true;
+  //     }
+  //     for (let i = 0; i < attacks.length; ++i) {
+  //       //TODO: Log errors if no attacking card
+  //       if (attacks[i].attackingCard.code[0] === card.code[0]) {
+  //         return true;
+  //       }
+  //       return false;
+  //     }
+  //   },
+  //   [attacks]
+  // );
 
-  const removeCardFromHand = useCallback(
-    (card, playerId) => {
-      let index = getPlayerIndexByKey(players, playerId);
-      let player = players[index];
-      let newHand = player.hand.filter((c) => c.code !== card.code);
-      updatePlayer(playerId, "hand", newHand);
-      //need some help here with how to update the player array
-    },
-    [players]
-  );
+  // const removeCardFromHand = useCallback(
+  //   (card, playerId) => {
+  //     // let index = getPlayerIndexByKey(players, playerId);
+  //     // let player = players[index];
+  //     // let newHand = player.hand.filter((c) => c.code !== card.code);
+  //     // updatePlayer(playerId, "hand", newHand);
+  //     // //need some help here with how to update the player array
+  //   },
+  //   [players]
+  // );
 
-  useEffect(() => {
-    //create deck and give players their hands
-    //this.makePlayerArray(this.props.playerCount);
-    createDeck()
-      .then((newDeckId) => {
-        setDeckId(newDeckId);
-        drawTrump(newDeckId).then((trump) => {
-          //console.log(trump);
-          setTrumpCard(trump);
-          let auxPlayers = [];
-          for (let i = 0; i < playerCount; i++) {
-            auxPlayers.push({
-              hand: null,
-              key: i,
-              pokerRuleCount: 2,
-              attacking: false,
-              defending: false
-            });
-          }
-          recursiveDrawHands(newDeckId, auxPlayers, [], (newPlayers) => {
-            //console.log(newPlayers);
-            setPlayers(newPlayers);
-            /* TODO */
-            //setAttacker(checkLowest(newPlayers, trump)); //decide who starts the game
-          });
-        }).catch((err) => {
-          console.log(err);
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [playerCount]);
-
-  const getPlayerIndexByKey = (players, key) => {
-    for (let i in players) {
-      //console.log(players);
-      if (players[i].key === key) return i;
-    }
-    return null;
-  };
+  // const getPlayerIndexByKey = (players, key) => {
+  //   for (let i in players) {
+  //     //console.log(players);
+  //     if (players[i].key === key) return i;
+  //   }
+  //   return null;
+  // };
 
   const handleBoardResize = (bbox) => {
     let y = (bbox.y || bbox.top) + PLAYER_HEIGHT;
@@ -127,17 +83,17 @@ export default ({ playerCount }) => {
     setBoundingBox({ x: bbox.x || bbox.left, y, width: bbox.width, height });
   };
 
-  const updatePlayer = useCallback(
-    (id, field, value) => {
-      const newPlayers = cloneDeep(players);
-      let updatedPlayerIndex = getPlayerIndexByKey(newPlayers, id);
-      if (updatedPlayerIndex) {
-        newPlayers[updatedPlayerIndex][field] = value;
-        setPlayers(newPlayers);
-      }
-    },
-    [players]
-  );
+  // const updatePlayer = useCallback(
+  //   (id, field, value) => {
+  //     const newPlayers = cloneDeep(players);
+  //     let updatedPlayerIndex = getPlayerIndexByKey(newPlayers, id);
+  //     if (updatedPlayerIndex) {
+  //       newPlayers[updatedPlayerIndex][field] = value;
+  //       setPlayers(newPlayers);
+  //     }
+  //   },
+  //   [players]
+  // );
 
   const pointInBox = (point, box) => {
     let xMin = box.x;
@@ -170,30 +126,29 @@ export default ({ playerCount }) => {
     [attackInBox]
   );
 
-  const placeCard = useCallback(
-    (card, playerId, center) => {
-      //TODO add a check if the player placing the card is attacking or defending
-      setBoxHovered(false)
-      if (attackInBox(center)) {
-        if (attackIsLegal(card)) {
-          let attackingCard = { ...card, center };
-          let attack = { attackingCard, defendingCard: null };
-          attacks.push(attack);
-          let aux = cloneDeep(attacks);
-          setAttacks(aux);
-          removeCardFromHand(card, playerId);
-          console.log(attacks);
-        } else {
-          //attack was not legal
-          console.log("Attack not legal " + card.code);
-        }
-      } // console.log(attacks);
-    },
-    [attackInBox, attackIsLegal, attacks, removeCardFromHand]
-  );
+  // const placeCard = useCallback(
+  //   (card, playerId, center) => {
+  //     //TODO add a check if the player placing the card is attacking or defending
+  //     setBoxHovered(false)
+  //     if (attackInBox(center)) {
+  //       if (attackIsLegal(card)) {
+  //         let attackingCard = { ...card, center };
+  //         let attack = { attackingCard, defendingCard: null };
+  //         attacks.push(attack);
+  //         let aux = cloneDeep(attacks);
+  //         setAttacks(aux);
+  //         removeCardFromHand(card, playerId);
+  //         console.log(attacks);
+  //       } else {
+  //         //attack was not legal
+  //         console.log("Attack not legal " + card.code);
+  //       }
+  //     } // console.log(attacks);
+  //   },
+  //   [attackInBox, attackIsLegal, attacks, removeCardFromHand]
+  // );
   // TODO how do we know which player is the 'main' one
   // assign each client a key and that corresponds to the key in the player element?
-
   return (
     <div
       style={{
@@ -218,11 +173,12 @@ export default ({ playerCount }) => {
           background: `rgba(255,255,255,${boxHovered ? 0.5 : 0})`,
         }}
       >
-        <AttackTable attacks={attacks} />
-        <ActiveAttacks attacks={attacks} height={PLAYER_HEIGHT}/>
-        <Trump code={trumpCard ? trumpCard.code : null} height={PLAYER_HEIGHT} />
+        <AttackTable game={game}/>
+        <ActiveAttacks game={game} height={PLAYER_HEIGHT}/>
+        <Trump game={game} height={PLAYER_HEIGHT} />
+        <PlayerHand game={game}/>
       </CenteredContainer>
-
+{/* 
       {players
         ? players.map(({ key, hand, pokerRuleCount }) => (
             <Player
@@ -237,7 +193,7 @@ export default ({ playerCount }) => {
               pokerRuleCount={pokerRuleCount}
             />
           ))
-        : null}
+        : null} */}
     </div>
   );
 };

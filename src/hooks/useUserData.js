@@ -112,10 +112,13 @@ export default () => {
     }
 
     const createGame = useCallback((players, callback) => {
+        console.log("in create game")
         dbUtils.createGame(user, players, ({ game, error }) => {
             if (error) {
                 callback({error})
             }
+
+            
             else{
                 if(game){
                     db.collection('users').doc(user.id).update({

@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import CenteredContainer from '../containers/CenteredContainer'
 import AttackingCard from '../card/AttackingCard'
 
-export default ({attacks, height}) => {
+export default ({game, height}) => {
+
+    const attacks = useMemo(() => game ? game.attacks : null, [game])
     
     return(
         <CenteredContainer>

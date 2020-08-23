@@ -1,18 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import CenteredContainer from '../containers/CenteredContainer';
+import {suiteAscii, suiteColor} from "./../util/baseUtil";
 
-function Trump({code, height}){
+function Trump({game, height}){
+
+    let trump = useMemo(() => game ? game.trump : null, [game])
+    let code = useMemo(() => trump ? trump.code: null, [trump])
+    
     const aspectRatio = 0.7;
-    let imgPath, num = null;
-    if(code !== null){
-        imgPath = "./../../spade.png";
-        num = code[0];
-    }
+    
+    let cardString = useMemo(() => {
+        if(code){
+            let num = code[0]
+            let suite = suiteAscii[code[1]]
+            return `${num === "0" ? 10 : num} ${suite}`
+        }
+    }, [code])
 
     return (
         <CenteredContainer
             style={{
-                color : "white",
+                color : code ? suiteColor[code[1]] : "white",
                 height : height * 0.5,
                 width: height * aspectRatio,
                 position: 'absolute',
@@ -22,12 +30,8 @@ function Trump({code, height}){
                 marginRight: '1%',
             }}
         >
-            <h1>{num === "0" ? 10 : num}</h1>
-            <img 
-                src={imgPath} 
-                alt={code}
-                height={height * 0.9}
-             />
+            <h1>{cardString}</h1>
+            
         </CenteredContainer>
     );
 }

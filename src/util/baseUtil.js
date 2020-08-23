@@ -1,8 +1,22 @@
-export const isLetter = (str) => {
+const suiteAscii = {
+    "H" : "♥",
+    "D" : "♦",
+    "S" : "♠",
+    "C" : "♣"
+}
+
+const suiteColor = {
+    "H" : "red",
+    "D" : "red",
+    "S" : "black",
+    "C" : "black"
+}
+
+const isLetter = (str) => {
     return str.length === 1 && str.match(/[A-Z]/i);
 }
 
-export const checkLowest = (players, trumpCard) => {
+const checkLowest = (players, trumpCard) => {
     // console.log(players);
     console.log(trumpCard);
     let minTrump = null;
@@ -46,3 +60,4 @@ export const checkLowest = (players, trumpCard) => {
     }
 }
 
+export {checkLowest, isLetter, suiteAscii, suiteColor};

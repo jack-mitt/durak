@@ -271,8 +271,8 @@ function CreateGameDialog({ user, hide, handleCreateGame }) {
         >
             <GameTitle title={`${user.username}'s game`} />
             {
-                players.map((player) =>
-                    <PlayerInfo player={player} />
+                players.map((player, index) =>
+                    <PlayerInfo player={player} key={index} />
                 )
             }
             <ButtonTextInput

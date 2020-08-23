@@ -21,7 +21,7 @@ export const drawTrump = async (deckId) => {
       count : 1,
     },
   });
-  
+
   const trump = data.cards[0];
 
   return trump;
@@ -39,3 +39,17 @@ export const drawCardFromDeck = (deckId, drawCount, callback) => {
     });
 
 }
+
+export const recursiveDrawHands = (deckId, oldPlayers, newPlayers, callback) => {
+  if (oldPlayers.length === 0) {
+    callback(newPlayers);
+    console.log("here");
+  } else {
+    drawCardFromDeck(deckId, 6, (hand) => {
+      console.log(hand);
+      newPlayers.push({ ...oldPlayers[0], hand });
+      oldPlayers.splice(0, 1);
+      recursiveDrawHands(deckId, oldPlayers, newPlayers, callback);
+    });
+  }
+};
