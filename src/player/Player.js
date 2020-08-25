@@ -8,7 +8,9 @@ import CenteredContainer from "../containers/CenteredContainer";
 
 import { drawCardFromDeck } from "../api";
 
-function Player({ deckId, hand, id, pokerRuleCount, updatePlayer, handleCardHover, placeCard, height }) {
+function Player({ game, playerData, user, handleCardHover, placeCard, height }) {
+
+  const hand = useMemo(() => playerData ? playerData.hand : [], [playerData])
   const [hoveredCardIndex, setHoveredCardIndex] = useState(null);
 
   const hoveredCard = useMemo(() => (hand ? hand[hoveredCardIndex] : null), [
@@ -17,20 +19,6 @@ function Player({ deckId, hand, id, pokerRuleCount, updatePlayer, handleCardHove
   ]);
 
   //EXECUTES ON MOUNT
-  useEffect(() => {
-    if (!hand && deckId) {
-      drawCardFromDeck(deckId, 6, (hand) => {
-        updatePlayer(id, 'hand', hand)
-      });
-    }
-  }, [deckId, id, hand, updatePlayer]);
-
-  //EXECUTES ON MOUNT AND WHEN hoveredCard CHANGES
-  useEffect(() => {
-    if (hoveredCard) {
-      //console.log(hoveredCard.code)
-    }
-  }, [hoveredCard]);
 
   return (
     <CenteredContainer
@@ -39,7 +27,7 @@ function Player({ deckId, hand, id, pokerRuleCount, updatePlayer, handleCardHove
         height,
         width: "100%",
         position: "absolute",
-        bottom: id === 1 ? "0" : "100",
+        bottom:0,
       }}
     >
       {hand
@@ -47,7 +35,7 @@ function Player({ deckId, hand, id, pokerRuleCount, updatePlayer, handleCardHove
             <Card
               height={height*0.9}
               handleCardHover={handleCardHover}
-              key={`player_${id}_card_${index}`}
+              key={`player_${playerData.id}_card_${index}`}
               placeCard={placeCard}
               onHoverIn={() => setHoveredCardIndex(index)}
               onHoverOut={() => setHoveredCardIndex(null)}

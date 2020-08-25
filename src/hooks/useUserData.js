@@ -17,7 +17,7 @@ export default () => {
 
     const [user, setUser] = useState(null)
 
-
+    //check if user is already signed in
     useEffect(() => {
         auth.onAuthStateChanged(currentUser => {
             if (currentUser) {
@@ -127,6 +127,7 @@ export default () => {
                         let auxUser = {...user}
                         auxUser.currentGame = game.id
                         setUser(auxUser)
+                        callback({success : true})
                     }).catch(err => {
                         console.log(err)
                         callback({error: 'Internal Error'})

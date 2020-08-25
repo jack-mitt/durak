@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { createDeck, drawCardFromDeck, drawTrump } from "../api";
 import Player from "../player/Player";
 import AttackTable from "./AttackTable";
@@ -10,6 +10,7 @@ import Trump from "./Trump";
 import {checkLowest, createTestGame} from  "./../util/baseUtil";
 import useGameData from "../hooks/useGameData";
 import PlayerHand from "../player/PlayerHand";
+import OtherPlayer from "../player/OtherPlayer";
 
 //TODO: change this for multiplayer
 const PLAYER_HEIGHT = 150;
@@ -23,7 +24,9 @@ export default ({ user }) => {
   
   
   const {game} = useGameData({user})
-  //console.log(game)
+  const players = useMemo(() => game ? game.players : [], [game])
+
+  console.log(game)
 
   // 0: clockwise, 1: counter-clockwise
   //const [direction, setDirection] = useState(0);
@@ -178,22 +181,21 @@ export default ({ user }) => {
         <Trump game={game} height={PLAYER_HEIGHT} />
         <PlayerHand game={game}/>
       </CenteredContainer>
-{/* 
+
       {players
-        ? players.map(({ key, hand, pokerRuleCount }) => (
+        ? players.map((playerData) => (
+            playerData.id === user.id ?
             <Player
+              key={`${playerData.id}_player`}
               handleCardHover={handleCardHover}
               height={PLAYER_HEIGHT}
-              placeCard={placeCard}
-              deckId={deckId}
-              updatePlayer={updatePlayer}
-              hand={hand}
-              id={key}
-              key={key}
-              pokerRuleCount={pokerRuleCount}
+              game={game}
+              playerData={playerData}
             />
+            :
+            <OtherPlayer playerData={playerData}/>
           ))
-        : null} */}
+        : null}
     </div>
   );
 };

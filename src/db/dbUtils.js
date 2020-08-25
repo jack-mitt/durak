@@ -39,8 +39,8 @@ const getUserData = (username, callback) => {
 
 const createGame = (host, players, callback) => {
 
-    let auxPlayers = ["keefypax", "tofeezy"]
-    let invitedPlayers = ["tofeezy", "keefypax"]
+    let auxPlayers = []
+    let invitedPlayers = []
 
     console.log("in db create game");
     for (let i = 0; i < players.length; i++) {
@@ -64,12 +64,13 @@ const createGame = (host, players, callback) => {
 
     createDeck().then(deckId => {
         drawTrump(deckId).then(trumpCard => {
+            console.log(auxPlayers);
             recursiveDrawHands(deckId, auxPlayers, [], (newPlayers) => {
-                console.log(newPlayers);
+                //console.log(newPlayers);
                 let attackerIndex = checkLowest(newPlayers, trumpCard);
-                console.log(attackerIndex);
+                //console.log(attackerIndex);
                 let attackerId = newPlayers[attackerIndex].id;
-                
+                console.log(newPlayers)
                 //gameState:
                 // 0 - Waiting to Start
                 // 1 - In Progress

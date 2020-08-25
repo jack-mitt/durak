@@ -46,10 +46,10 @@ function App() {
     <div className="App">
       <Layout>
         <Background />
-        {/* <SignInPage user={user} signIn={signIn} createUser={createUser} />
-        <GameMenu createGame={createGame} user={user} />
-        <LogOutButton user={user} logOut={logOut} />  */}
         <Board user={user} />
+        <GameMenu createGame={createGame} user={user} />
+        <LogOutButton user={user} logOut={logOut} /> 
+        <SignInPage user={user} signIn={signIn} createUser={createUser} />
       </Layout>
     </div>
   );

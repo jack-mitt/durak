@@ -366,6 +366,7 @@ export default ({ user, createGame }) => {
             setLoading(true)
             createGame(players, ({ error }) => {
                 console.log(error)
+                setLoading(false)
             })
         }
     }, [user])
@@ -377,8 +378,8 @@ export default ({ user, createGame }) => {
                 top: 0,
                 left: 0,
                 fontFamily: 'Antic Slab',
-                opacity: user ? 1 : 0,
-                pointerEvents: user ? 'auto' : 'none',
+                opacity: user && !user.currentGame ? 1 : 0,
+                pointerEvents: user && !user.currentGame ? 'auto' : 'none',
                 transition: 'opacity 500ms'
             }}
         >
