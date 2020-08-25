@@ -235,10 +235,21 @@ function GameTitle({ title }) {
 
 }
 
-function CreateGameDialog({ user, hide, handleCreateGame }) {
+function CreateGameDialog({ user, hide, createGame, setLoading }) {
 
     const [players, setPlayers] = useState([user])
-    const [loading, setLoading] = useState(false)
+
+    const handleCreateGame = useCallback((players) => {
+        if (players.length > 1) {
+            setLoading(true)
+            createGame(players, ({ error }) => {
+                console.log(error)
+                setLoading(false)
+                setPlayers([user])
+            })
+        }
+    }, [user])
+
 
     const height = useMemo(() => hide ? 0 : players.length * 50 + 50 + 80 + (players.length > 1 ? 50 : 0), [hide, players])
 
@@ -304,7 +315,7 @@ function GameInvite({ game }) {
     )
 }
 
-function JoinGameDialog({ user, hide }) {
+function JoinGameDialog({ user, hide, setLoading}) {
 
     const [gameInvites, setGameInvites] = useState(null)
 
@@ -361,23 +372,15 @@ export default ({ user, createGame }) => {
     const [optionToggle, setOptionToggle] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const handleCreateGame = useCallback((players) => {
-        if (players.length > 1) {
-            setLoading(true)
-            createGame(players, ({ error }) => {
-                console.log(error)
-                setLoading(false)
-            })
-        }
-    }, [user])
-
     return (
         <CenteredContainer
             style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
+                overflowY: 'auto',
                 fontFamily: 'Antic Slab',
+                alignItems: 'flex-start',
                 opacity: user && !user.currentGame ? 1 : 0,
                 pointerEvents: user && !user.currentGame ? 'auto' : 'none',
                 transition: 'opacity 500ms'
@@ -388,13 +391,14 @@ export default ({ user, createGame }) => {
                     <CenteredContainer
                         style={{
                             maxWidth: 500,
+                            margin: '30px 0px',
                             flexFlow: 'column',
                             background: '#1b1b1b',
                             height: 'auto'
                         }}
                     >
                         <ToggleBox second='Create Game' first='Join Game' value={optionToggle} set={setOptionToggle} />
-                        <CreateGameDialog handleCreateGame={handleCreateGame} user={user} hide={!optionToggle} />
+                        <CreateGameDialog setLoading={setLoading} createGame={createGame} user={user} hide={!optionToggle} />
                         <JoinGameDialog user={user} hide={optionToggle} />
                         <LoadingLogo loading={loading} />
                     </CenteredContainer>

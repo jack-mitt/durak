@@ -32,12 +32,36 @@ function LogOutButton({ logOut, user }) {
   );
 }
 
+function LeaveGameButton({ leaveGame, user }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <CenteredContainer
+      onClick={leaveGame}
+      style={{
+        cursor: "pointer",
+        position: "absolute",
+        pointerEvents: (user && user.currentGame) ? "auto" : "none",
+        opacity: (user && user.currentGame) ? (hovered ? 1 : 0.6) : 0,
+        left: "10px",
+        width: "auto",
+        height: "auto",
+        top: "30px",
+        fontFamily: "Antic Slab",
+        color: "white",
+      }}
+    >
+      Leave game
+    </CenteredContainer>
+  );
+}
+
 function App() {
   const state = {
     playerCount: 2, //TODO
   };
 
-  const { user, createGame, signIn, logOut, createUser } = useUserData();
+  const { user, createGame, signIn, logOut, leaveGame, createUser } = useUserData();
 
   //TEMP FOR DEVELOPMENT
   //const user = {username: 'Tofeezy', gameInvites: ['testid']};
@@ -49,6 +73,7 @@ function App() {
         <Board user={user} />
         <GameMenu createGame={createGame} user={user} />
         <LogOutButton user={user} logOut={logOut} /> 
+        <LeaveGameButton user={user} leaveGame={leaveGame}/>
         <SignInPage user={user} signIn={signIn} createUser={createUser} />
       </Layout>
     </div>

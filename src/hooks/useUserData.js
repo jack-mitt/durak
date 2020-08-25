@@ -22,7 +22,7 @@ export default () => {
         auth.onAuthStateChanged(currentUser => {
             if (currentUser) {
                 let id = currentUser.uid
-                db.collection('users').doc(id).get().then(res => {
+                db.collection('users').doc(id).onSnapshot(res => {
                     setUser({ ...res.data(), id })
                 }).catch(err => {
                     console.log(err)
@@ -89,10 +89,10 @@ export default () => {
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
             auth.signInWithEmailAndPassword(email, password).then(res => {
                 let id = res.user.uid
-                db.collection('users').doc(id).get().then(res => {
+                db.collection('users').doc(id).onSnapshot(res => {
                     console.log(res.data())
                     setTimeout(() => setUser({ ...res.data(), id }), 1000)
-                    callback({ success: true })
+                    callback({ success: true })                    
                 }).catch(err => {
                     console.log(err)
                     callback({ error: 'Database Error' })
@@ -140,6 +140,13 @@ export default () => {
         })
     }, [user])
 
+    const leaveGame = useCallback(() => {
+        if(user && user.currentGame){
+            db.collection('users').doc(user.id).update({currentGame: firebase.firestore.FieldValue.delete()}).catch(err => {
+                console.log(err)
+            })
+        }
+    }, [user])
 
-    return { createUser, signIn, logOut, user, createGame }
+    return { createUser, signIn, logOut, user, leaveGame, createGame }
 }
